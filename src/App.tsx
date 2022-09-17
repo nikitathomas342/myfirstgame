@@ -20,7 +20,11 @@ const initializeStates = () => Object.assign(gameStates, defaultGameStates)
 const controllerWidth = 50
 const controllerHeight = 10
 const controllerOffSet = 2
+
 const ballSize = 1.5
+
+const obstacleWidth = 10
+const obstacleHeight = 3
 
 // background render functions
 const renderBackground = (
@@ -71,7 +75,12 @@ const reloadBall = (canvas: HTMLCanvasElement) => {
     const collision = detectCollisionBetweenControllerAndBall(canvas)
     if (collision) handleControllerCollision()
     if (x! < 0 + ballSize || x! > canvas.width - ballSize) invertVector('vx')
-    if (y! < 0 + ballSize || y! > canvas.height - ballSize) invertVector('vy')
+    if (y! < 0 + ballSize) invertVector('vy')
+    if (y! > canvas.height - ballSize) {
+      gameStates.isGameStarted = false
+      Object.assign(gameStates.ball!, { vx: 0, vy: 0 })
+      onload()
+    }
   }
 }
 
@@ -121,8 +130,8 @@ const onclick = () => {
     const directionX = Math.round(Math.random())
     const directionY = Math.round(Math.random())
     const level = 1
-    let vx = level * 0.1
-    let vy = level * 0.1
+    let vx = level * Math.random()
+    let vy = level * Math.random()
     if (directionX === 0) vx = -vx
     if (directionY === 0) vy = -vy
     Object.assign(gameStates.ball!, { vx, vy })
